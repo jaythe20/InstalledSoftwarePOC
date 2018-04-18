@@ -23,17 +23,17 @@ namespace InstalledSoft
                 folderNameandTime.Add(info.FullName, info.CreationTimeUtc);
             }
 
-            Dictionary<DateTime, List<string>> folderName = folderNameandTime.GroupBy(a => a.Value.Date.Date).ToDictionary(t => t.Key, t => t.Select(a => string.Format("{0}, {1}", a.Key, a.Value)).ToList());
+            Dictionary<DateTime, List<string>> folderName = folderNameandTime.GroupBy(a => a.Value.Date).ToDictionary(t => t.Key, t => t.Select(a => string.Format("{0}, {1}", Path.GetFileName(a.Key), a.Value)).ToList());
 
             using (StreamWriter file = new StreamWriter(@"C:\InstalledSoftware.txt"))
             {
-                foreach (var entry in folderName.OrderBy(a=>a.Key.Date.Date))
+                foreach (var entry in folderName.OrderBy(a=>a.Key.Date))
                 {
-                    file.WriteLine("[Created Date - {0}]", entry.Key);
+                    file.WriteLine("[Created Date - {0}]", entry.Key.ToString("MM/dd/yyyy"));
 
                     foreach (var item in entry.Value)
                     {
-                        file.WriteLine("Name - {0}", item);
+                        file.WriteLine("     FolderName :: {0}", item);
                     }
                 }
             }
