@@ -29,12 +29,13 @@ namespace InstalledSoft
             {
                 foreach (var entry in folderName.OrderBy(a=>a.Key.Date))
                 {
+                    file.WriteLine();
                     file.WriteLine("[Created Date - {0}]", entry.Key.ToString("MM/dd/yyyy"));
 
                     var folderData = entry.Value.Select(a => a.Split(',').ToList());
                     var listname = folderData.GroupBy(a => Convert.ToDateTime(a[1]).ToString("HH:mm")).ToDictionary(t => t, t => t.Select(a => string.Format("{0}, {1}", Path.GetFileName(a[0]), a[1])).ToList());
 
-                    foreach (var item in listname)
+                    foreach (var item in listname.OrderBy(a => a.Key.Key))
                     {
                         file.WriteLine(" Time :: {0} ", item.Key.Key);
                         foreach (var items in item.Value)
