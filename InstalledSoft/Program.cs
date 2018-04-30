@@ -24,16 +24,23 @@ namespace InstalledSoft
             }
 
             Dictionary<DateTime, List<string>> folderName = folderNameandTime.GroupBy(a => a.Value.Date).ToDictionary(t => t.Key, t => t.Select(a => string.Format("{0}, {1}", Path.GetFileName(a.Key), a.Value)).ToList());
-
+            
             using (StreamWriter file = new StreamWriter(@"C:\InstalledSoftware.txt"))
             {
                 foreach (var entry in folderName.OrderBy(a=>a.Key.Date))
                 {
                     file.WriteLine("[Created Date - {0}]", entry.Key.ToString("MM/dd/yyyy"));
 
-                    foreach (var item in entry.Value)
+                    var folderData = entry.Value.Select(a => a.Split(',').ToList());
+                    var listname = folderData.GroupBy(a => Convert.ToDateTime(a[1]).ToString("HH:mm")).ToDictionary(t => t, t => t.Select(a => string.Format("{0}, {1}", Path.GetFileName(a[0]), a[1])).ToList());
+
+                    foreach (var item in listname)
                     {
-                        file.WriteLine("     FolderName :: {0}", item);
+                        file.WriteLine(" Time :: {0} ", item.Key.Key);
+                        foreach (var items in item.Value)
+                        {
+                            file.WriteLine("     FolderName :: {0}", items);
+                        }
                     }
                 }
             }
