@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace InstalledSoft
 {
@@ -56,22 +57,33 @@ namespace InstalledSoft
 
                     #endregion
 
-                    #region Result in Physical File
+                    //#region Result in Physical File
 
-                    file.WriteLine();
-                    file.WriteLine("[Created Date - {0}]", entry.Key.ToString("MM/dd/yyyy"));
+                    //file.WriteLine();
+                    //file.WriteLine("[Created Date - {0}]", entry.Key.ToString("MM/dd/yyyy"));
 
-                    var listname = folderData.GroupBy(a => Convert.ToDateTime(a[1]).ToString("HH:mm:ss")).ToDictionary(t => t, t => t.Select(a => string.Format("{0}: {1}", Path.GetFileName(a[0]), a[1])).ToList());
+                    //var listname = folderData.GroupBy(a => Convert.ToDateTime(a[1]).ToString("HH:mm:ss")).ToDictionary(t => t, t => t.Select(a => string.Format("{0}: {1}", Path.GetFileName(a[0]), a[1])).ToList());
 
-                    foreach (var item in listname.OrderBy(a => a.Key.Key))
+                    //foreach (var item in listname.OrderBy(a => a.Key.Key))
+                    //{
+                    //    file.WriteLine(" Time :: {0} ", item.Key.Key);
+                    //    foreach (var items in item.Value)
+                    //    {
+                    //        file.WriteLine("     FolderName :: {0}", items);
+                    //    }
+                    //} 
+                    //#endregion
+                }
+
+                foreach (var item in latestFolder)
+                {
+                    var stringData = string.Empty;
+                    foreach (var items in item.Value)
                     {
-                        file.WriteLine(" Time :: {0} ", item.Key.Key);
-                        foreach (var items in item.Value)
-                        {
-                            file.WriteLine("     FolderName :: {0}", items);
-                        }
-                    } 
-                    #endregion
+                        stringData += JsonConvert.SerializeObject(items);
+                    }
+
+                    file.WriteLine(string.Format("{{\"{0}\":[{1}]}}", item.Key, stringData));
                 }
             }
         }
